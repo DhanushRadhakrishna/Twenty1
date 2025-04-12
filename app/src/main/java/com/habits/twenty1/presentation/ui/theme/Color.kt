@@ -1,4 +1,4 @@
-package com.habits.twenty1.ui.theme
+package com.habits.twenty1.presentation.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
