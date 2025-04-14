@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -33,18 +34,21 @@ fun Home(modifier: Modifier  = Modifier)
         Surface(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.tertiary)) {
             NavHost(navController = navController, startDestination = Home.route)
             {
-                composable(route = Home.route){ HomeScreen() }
-                composable(route = NormalGame.route){}
+                composable(route = Home.route)
+                {
+                    HomeScreen(onClickNormalGame = {navController.navigateSingleTop(NormalGame.route)})
+                }
+                composable(route = NormalGame.route){ NormalGame() }
             }
         }
     }
 
 }
 @Composable
-fun HomeScreen(modifier: Modifier = Modifier) {
-        Column(modifier = Modifier.fillMaxSize()) {
+fun HomeScreen(modifier: Modifier = Modifier, onClickNormalGame : () -> Unit = {}) {
+        Column(modifier = Modifier.fillMaxSize().padding(top = 46.dp)) {
             Text("Hello!\nand Welcome to TwentyOne",
-                modifier = Modifier.align(Alignment.CenterHorizontally).padding(18.dp, top = 64.dp),
+                modifier = Modifier.align(Alignment.CenterHorizontally).padding(18.dp),
                 style = MaterialTheme.typography.titleLarge,
                 textAlign = TextAlign.Left,
                 color = MaterialTheme.colorScheme.tertiary)
@@ -59,15 +63,19 @@ fun HomeScreen(modifier: Modifier = Modifier) {
                 textAlign = TextAlign.Left,
                 color = MaterialTheme.colorScheme.secondary,
             )
-            Button(onClick = {},
+            Button(onClick = onClickNormalGame,
                 modifier = Modifier.align(Alignment.CenterHorizontally).padding(18.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary)
             )
             {
-                Text(text = "Start a new game")
+                Text(text = "Start a new game",
+                    modifier = Modifier.align(Alignment.CenterVertically),
+                    style = MaterialTheme.typography.bodyMedium
+                    )
             }
         }
 }
+fun NavHostController.navigateSingleTop(route : String) = this.navigate(route){launchSingleTop = true}
 
 @Preview(showBackground = true)
 @Composable
