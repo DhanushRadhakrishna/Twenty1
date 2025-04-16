@@ -47,7 +47,7 @@ fun Home(modifier: Modifier  = Modifier)
 @Composable
 fun HomeScreen(modifier: Modifier = Modifier, onClickNormalGame : () -> Unit = {}) {
         Column(modifier = Modifier.fillMaxSize().padding(top = 46.dp)) {
-            Text("Hello!\nand Welcome to TwentyOne",
+            Text("Hello!\nand Welcome to Twenty-One",
                 modifier = Modifier.align(Alignment.CenterHorizontally).padding(18.dp),
                 style = MaterialTheme.typography.titleLarge,
                 textAlign = TextAlign.Left,
