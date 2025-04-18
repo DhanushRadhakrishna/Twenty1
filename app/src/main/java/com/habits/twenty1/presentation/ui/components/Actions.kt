@@ -28,7 +28,8 @@ fun ActionCenter(modifier: Modifier = Modifier,
                  hitButtonState : Boolean,
                  standButtonState : Boolean,
                  doubleDownButtonState : Boolean,
-                 splitButtonState : Boolean
+                 splitButtonState : Boolean,
+                 onHit: () -> Unit,
                  )
 {
     Column(modifier = modifier.padding(2.dp)) {
@@ -48,7 +49,7 @@ fun ActionCenter(modifier: Modifier = Modifier,
                     Button(
                         modifier = Modifier.fillMaxSize(),
                         shape = RoundedCornerShape(Dimen.ActionButton.radius),
-                        onClick = { /*TODO*/ })
+                        onClick = onHit)
                     {
                         Text(
                             text = "Hit",

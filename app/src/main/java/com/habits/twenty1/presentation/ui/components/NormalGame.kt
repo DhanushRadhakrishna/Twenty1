@@ -57,7 +57,8 @@ fun NormalGame(modifier: Modifier = Modifier.padding(top = 24.dp)) {
                     hitButtonState = uiState.value.hitActionState,
                     standButtonState = uiState.value.standActionState,
                     doubleDownButtonState = uiState.value.doubleDownActionState,
-                    splitButtonState = uiState.value.splitActionState
+                    splitButtonState = uiState.value.splitActionState,
+                    onHit = {viewModel.hit()}
             )
     }
 }
