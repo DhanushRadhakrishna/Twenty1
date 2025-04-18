@@ -33,8 +33,15 @@ val Typography = Typography(
         lineHeight = 50.sp,
         letterSpacing = 1.sp
     ),
+    labelMedium = TextStyle(
+        fontFamily = FiraCodeFont,
+        fontWeight = FontWeight.Medium,
+        fontSize = 14.sp,
+        lineHeight = 16.sp,
+        letterSpacing = 1.sp
+    ),
     labelSmall = TextStyle(
-        fontFamily = FontFamily.Default,
+        fontFamily = FiraCodeFont,
         fontWeight = FontWeight.Medium,
         fontSize = 11.sp,
         lineHeight = 16.sp,

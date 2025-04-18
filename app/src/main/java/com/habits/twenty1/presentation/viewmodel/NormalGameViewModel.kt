@@ -6,37 +6,127 @@ import com.habits.twenty1.game_logic.Game
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import com.habits.twenty1.game_logic.deck
+import com.habits.twenty1.presentation.NormalGameUiState
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+
 class NormalGameViewModel : ViewModel() {
 
-    private val _gameMessage = MutableStateFlow("Place your bet")
-    val gameMessage : StateFlow<String> = _gameMessage
-
-    private val _dealersHand = MutableStateFlow<List<Card>>(emptyList())
-    val dealersHand : StateFlow<List<Card>> = _dealersHand
-
-    private val _playersHand = MutableStateFlow<List<Card>>(emptyList())
-    val playersHand : StateFlow<List<Card>> = _playersHand
-
+    private val _uiState = MutableStateFlow(NormalGameUiState())
+    val uiState : StateFlow<NormalGameUiState> = _uiState.asStateFlow()
 
     val playerCards = mutableListOf<Card>()
     val dealerCards = mutableListOf<Card>()
-    lateinit var dealersSecondCard : Card
     val game = Game(deck)
-    init {
+
+    init{
+
         game.shuffleDeck()
-        //player gets one
+        dealPlayerHand()
+        dealDealerHand()
+        dealPlayerHand()
+        dealDealerHand()
+        checkBlackJack()
+    }
+    fun dealPlayerHand()
+    {
         playerCards.add(game.dealACard())
-        _playersHand.value = playerCards
+        _uiState.update {
+            it.copy(playerHand = playerCards)
+        }
+    }
+    fun dealDealerHand()
+    {
         dealerCards.add(game.dealACard())
-        _dealersHand.value = dealerCards
+        _uiState.update {
+            it.copy(dealerHand = dealerCards)
+        }
+    }
+    //check if players cards is blackjack
+    fun checkBlackJack()
+    {
+        if(game.isBlackjack(playerCards))
+        {
+            _uiState.update {
+                it.copy(gameMessage = "Blackjack! You Win!")
+            }
+        }
+        else{
+            _uiState.update {
+                it.copy(gameMessage = "Hit? Stand? Double Down?")
+            }
+        }
+    }
+    //player hits
+    fun hit()
+    {
         playerCards.add(game.dealACard())
-        _playersHand.value = playerCards
-        dealersSecondCard = game.dealACard()
-        dealerCards.add(Card("",'0',0))
-        _dealersHand.value = dealerCards
-        //if bet is empty for more than 5secs show a toast
-        _gameMessage.value = "Hit? Stand? Double Down?"
+        _uiState.update {
+            it.copy(playerHand = playerCards)
+        }
+        updateActionCenter()
+    }
+    fun stand()
+    {
+        //turn dealer's card up
+        //if dealers hand is less than 17, hit dealer hand
+        while(game.handValue(dealerCards)<17)
+        {
+            dealerCards.add(game.dealACard())
+            _uiState.update {
+                it.copy(dealerHand = dealerCards)
+            }
+        }
+        //determine the winner
+//        updateActionCenter()
+        showTheWinner()
+    }
+    //if players busts
+    fun updateActionCenter()
+    {
+        val playerHandValue = game.handValue(playerCards)
+        //if player bust
+        if(playerHandValue>21)
+        {
+            _uiState.update {
+                it.copy(hitActionState = false,
+                    doubleDownActionState = false,
+                    splitActionState = false,
+                    standActionState = false
+                )
+            }
+        }
+        //if player can hit, split, stand, double
+        else
+        {
+            _uiState.update {
+                it.copy(hitActionState = true,
+                    standActionState = true,
+                    splitActionState = false,
+                    doubleDownActionState = false)
+            }
+            //if player can split
+            if(game.checkSplit(playerCards))
+            {
+                _uiState.update {
+                    it.copy(splitActionState = true)
+                }
+            }
+            //if player can double
+            if(game.handValue(playerCards)>9)
+            {
+                _uiState.update {
+                    it.copy(doubleDownActionState = true)
+                }
+            }
+        }
     }
 
+    fun showTheWinner()
+    {
+        _uiState.update {
+            it.copy(gameMessage = game.determineWinner(playerCards,dealerCards))
+        }
+    }
 
 }

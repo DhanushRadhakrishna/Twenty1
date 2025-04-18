@@ -37,7 +37,21 @@ class Game(val deck : MutableList<Card>) {
     {
         return handValue(hand) == 21 && hand.size == 2
     }
-
+    //check if hand can split
+    fun checkSplit(hand : List<Card>):Boolean
+    {
+        if(hand.size>2)
+        {
+            return false
+        }
+        else{
+            if(hand[0].rank==hand[1].rank)
+            {
+                return true
+            }
+        }
+        return false
+    }
 
     fun determineWinner(playerHand : List<Card>, dealerHand : List<Card>) : String
     {

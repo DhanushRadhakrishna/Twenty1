@@ -26,35 +26,44 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.habits.twenty1.game_logic.Card
 import com.habits.twenty1.presentation.NormalGame
 import com.habits.twenty1.presentation.ui.theme.OffWhite
 import com.habits.twenty1.presentation.viewmodel.NormalGameViewModel
 
-val exampleCards = listOf(Card("Hearts", 'A',11), Card("Diamonds", '2',11), Card("Clubs", '3',11), Card("Spades", '4',11))
 
 @Composable
 fun NormalGame(modifier: Modifier = Modifier.padding(top = 24.dp)) {
-    val viewModel = NormalGameViewModel()
-    val dealersHand by viewModel.dealersHand.collectAsStateWithLifecycle()
-    val playersHand by viewModel.playersHand.collectAsStateWithLifecycle()
-    val gameMessage by viewModel.gameMessage.collectAsStateWithLifecycle()
+    val viewModel : NormalGameViewModel = viewModel()
+    val uiState = viewModel.uiState.collectAsStateWithLifecycle()
     Column(modifier = Modifier.padding(12.dp).fillMaxSize()) {
         Text(
             text = "Normal Game",
             modifier = modifier
                 .fillMaxWidth()
+                .weight(0.05f)
                 .wrapContentHeight()
-                .padding(4.dp),
+                .padding(10.dp),
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.bodyMedium
         )
-        Table(dealersHand, playersHand,gameMessage,modifier = Modifier.weight(0.75f))
+        Table(uiState.value.dealerHand,
+            uiState.value.playerHand,
+            uiState.value.gameMessage,
+            modifier = Modifier.weight(0.75f)
+        )
+        ActionCenter(modifier = Modifier.weight(0.15f),
+                    hitButtonState = uiState.value.hitActionState,
+                    standButtonState = uiState.value.standActionState,
+                    doubleDownButtonState = uiState.value.doubleDownActionState,
+                    splitButtonState = uiState.value.splitActionState
+            )
     }
 }
 
 @Composable
-fun Table(dealersHand: List<Card>, playersHand: List<Card>,gameMessage : String = "Default message",modifier: Modifier = Modifier.fillMaxHeight().padding(10.dp)) {
+fun Table(dealersHand: List<Card>, playersHand: List<Card>,gameMessage : String = "Default message",modifier: Modifier = Modifier.fillMaxHeight().padding(4.dp)) {
     Column(modifier = modifier.background(color = OffWhite)) {
         Text("Dealer", modifier = Modifier.padding(start = 12.dp, top = 12.dp))
         LazyRow(modifier = Modifier
@@ -140,7 +149,7 @@ fun NormalGameScreen() {
 //@Preview
 @Composable
 fun TablePreview() {
-    Table(exampleCards, exampleCards,"Default message",modifier = Modifier)
+//    Table(exampleCards, exampleCards,"Default message",modifier = Modifier)
 }
 //@Preview
 @Composable
