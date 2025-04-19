@@ -1,5 +1,6 @@
 package com.habits.twenty1.presentation.ui.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -12,6 +13,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,6 +33,9 @@ fun ActionCenter(modifier: Modifier = Modifier,
                  doubleDownButtonState : Boolean,
                  splitButtonState : Boolean,
                  onHit: () -> Unit,
+                 onStand:() -> Unit,
+                 onDoubleDown:()->Unit,
+                 onSplit: () ->Unit
                  )
 {
     Column(modifier = modifier.padding(2.dp)) {
@@ -37,9 +43,13 @@ fun ActionCenter(modifier: Modifier = Modifier,
             Row(horizontalArrangement = Arrangement.Absolute.spacedBy(8.dp))
             {
                 Box(modifier = Modifier
+                    .background(
+                      color = if(hitButtonState) Color.Gray else Color.Blue,
+                      shape = RoundedCornerShape(Dimen.Action.radius)
+                    )
                     .border(
                         Dimen.Action.border,
-                        MaterialTheme.colorScheme.primary,
+                        MaterialTheme.colorScheme.tertiary,
                         RoundedCornerShape(Dimen.Action.radius)
                     )
                     .fillMaxWidth(0.5f)
@@ -48,6 +58,13 @@ fun ActionCenter(modifier: Modifier = Modifier,
                 {
                     Button(
                         modifier = Modifier.fillMaxSize(),
+                        enabled = hitButtonState,
+                        colors = ButtonColors(
+                            containerColor = MaterialTheme.colorScheme.tertiary,
+                            contentColor = Color.Black,
+                            disabledContentColor = Color.Gray,
+                            disabledContainerColor = Color.Black
+                            ),
                         shape = RoundedCornerShape(Dimen.ActionButton.radius),
                         onClick = onHit)
                     {
@@ -58,18 +75,29 @@ fun ActionCenter(modifier: Modifier = Modifier,
                     }
                 }
                 Box(modifier = Modifier
+                    .background(
+                      color = if(standButtonState) Color.Gray else Color.Blue,
+                      shape = RoundedCornerShape(Dimen.Action.radius)
+                    )
                     .border(
                         Dimen.Action.border,
-                        MaterialTheme.colorScheme.primary,
+                        MaterialTheme.colorScheme.tertiary,
                         RoundedCornerShape(Dimen.Action.radius)
                     )
                     .fillMaxWidth()
                     .height(50.dp)
                 ){
                     Button(
+                        enabled = standButtonState,
                         modifier = Modifier.fillMaxSize(),
                         shape = RoundedCornerShape(Dimen.ActionButton.radius),
-                        onClick = { /*TODO*/ })
+                        colors = ButtonColors(
+                            containerColor = MaterialTheme.colorScheme.tertiary,
+                            contentColor = Color.Black,
+                            disabledContentColor = Color.Gray,
+                            disabledContainerColor = Color.Black
+                        ),
+                        onClick = onStand)
                     {
                         Text(
                             text = "Stand",
@@ -83,9 +111,13 @@ fun ActionCenter(modifier: Modifier = Modifier,
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp))
             {
                 Box(modifier = Modifier
+                    .background(
+                      color = if(doubleDownButtonState) Color.Gray else Color.Blue,
+                      shape = RoundedCornerShape(Dimen.Action.radius)
+                    )
                     .border(
                         Dimen.Action.border,
-                        MaterialTheme.colorScheme.primary,
+                        MaterialTheme.colorScheme.tertiary,
                         RoundedCornerShape(Dimen.Action.radius)
                     )
                     .fillMaxWidth(0.5f)
@@ -93,9 +125,16 @@ fun ActionCenter(modifier: Modifier = Modifier,
                 )
                 {
                     Button(
+                        enabled = doubleDownButtonState,
                         modifier = Modifier.fillMaxSize(),
                         shape = RoundedCornerShape(Dimen.ActionButton.radius),
-                        onClick = { /*TODO*/ })
+                        colors = ButtonColors(
+                            containerColor = MaterialTheme.colorScheme.tertiary,
+                            contentColor = Color.Black,
+                            disabledContentColor = Color.Gray,
+                            disabledContainerColor = Color.Black
+                        ),
+                        onClick = onDoubleDown)
                     {
                         Text(
                             text = "Double Down",
@@ -106,16 +145,23 @@ fun ActionCenter(modifier: Modifier = Modifier,
                 Box(modifier = Modifier
                     .border(
                         Dimen.Action.border,
-                        MaterialTheme.colorScheme.primary,
+                        MaterialTheme.colorScheme.tertiary,
                         RoundedCornerShape(Dimen.Action.radius)
                     )
                     .fillMaxWidth()
                     .height(50.dp)
                 ){
                     Button(
+                        enabled = splitButtonState,
                         modifier = Modifier.fillMaxSize(),
                         shape = RoundedCornerShape(Dimen.ActionButton.radius),
-                        onClick = { /*TODO*/ })
+                        colors = ButtonColors(
+                            containerColor = MaterialTheme.colorScheme.tertiary,
+                            contentColor = Color.Black,
+                            disabledContentColor = Color.Gray,
+                            disabledContainerColor = Color.Black
+                        ),
+                        onClick = onSplit)
                     {
                         Text(
                             text = "Split",

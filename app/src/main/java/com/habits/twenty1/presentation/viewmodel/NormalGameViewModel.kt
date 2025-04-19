@@ -20,13 +20,20 @@ class NormalGameViewModel : ViewModel() {
     val game = Game(deck)
 
     init{
-
         game.shuffleDeck()
         dealPlayerHand()
         dealDealerHand()
         dealPlayerHand()
         dealDealerHand()
         checkBlackJack()
+        if(game.handValue(playerCards)>9)
+        {
+            updateActionCenter(null,null,true,null)
+        }
+        if(game.checkSplit(playerCards))
+        {
+            updateActionCenter(null,null,null,true)
+        }
     }
     fun dealPlayerHand()
     {
@@ -64,7 +71,16 @@ class NormalGameViewModel : ViewModel() {
         _uiState.update {
             it.copy(playerHand = playerCards)
         }
-        updateActionCenter()
+        if(playerCards.size>2)
+        {
+            updateActionCenter(null,null,false,false)
+        }
+        if(game.handValue(playerCards)>21)
+        {
+            updateActionCenter(false,false,false,false)
+            showTheWinner()
+        }
+
     }
     fun stand()
     {
@@ -78,48 +94,28 @@ class NormalGameViewModel : ViewModel() {
             }
         }
         //determine the winner
-//        updateActionCenter()
+        updateActionCenter(false,false,false,false)
         showTheWinner()
     }
-    //if players busts
-    fun updateActionCenter()
+    fun split()
     {
-        val playerHandValue = game.handValue(playerCards)
-        //if player bust
-        if(playerHandValue>21)
-        {
-            _uiState.update {
-                it.copy(hitActionState = false,
-                    doubleDownActionState = false,
-                    splitActionState = false,
-                    standActionState = false
-                )
-            }
+
+    }
+    fun doubleDown()
+    {
+
+    }
+    fun updateActionCenter(hitState : Boolean?,standState: Boolean?,doubleDownState: Boolean?,splitState: Boolean? )
+    {
+        _uiState.update {
+            it.copy(
+                hitActionState = hitState?:it.hitActionState,
+                standActionState = standState?:it.standActionState,
+                doubleDownActionState = doubleDownState?:it.doubleDownActionState,
+                splitActionState = splitState?:it.splitActionState
+            )
         }
-        //if player can hit, split, stand, double
-        else
-        {
-            _uiState.update {
-                it.copy(hitActionState = true,
-                    standActionState = true,
-                    splitActionState = false,
-                    doubleDownActionState = false)
-            }
-            //if player can split
-            if(game.checkSplit(playerCards))
-            {
-                _uiState.update {
-                    it.copy(splitActionState = true)
-                }
-            }
-            //if player can double
-            if(game.handValue(playerCards)>9)
-            {
-                _uiState.update {
-                    it.copy(doubleDownActionState = true)
-                }
-            }
-        }
+
     }
 
     fun showTheWinner()

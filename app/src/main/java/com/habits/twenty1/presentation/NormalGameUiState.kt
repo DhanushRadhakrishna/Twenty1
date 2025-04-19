@@ -8,7 +8,7 @@ data class NormalGameUiState(
     val gameMessage : String = "Place your bet",
     val hitActionState : Boolean = true,
     val standActionState : Boolean = true,
-    val doubleDownActionState : Boolean = true,
-    val splitActionState : Boolean =true
+    val doubleDownActionState : Boolean = false,
+    val splitActionState : Boolean = false
 
     )
