@@ -1,7 +1,8 @@
 package com.habits.twenty1.game_logic
 
-class Game(val deck : MutableList<Card>) {
+class Game(private val deckProvider : DeckProvider) {
 
+    private val deck = deckProvider.provideDecks()
     fun shuffleDeck()
     {
         deck.shuffle()

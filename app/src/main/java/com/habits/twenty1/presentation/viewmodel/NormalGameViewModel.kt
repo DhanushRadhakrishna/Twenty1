@@ -2,22 +2,23 @@ package com.habits.twenty1.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import com.habits.twenty1.game_logic.Card
+import com.habits.twenty1.game_logic.DeckProvider
 import com.habits.twenty1.game_logic.Game
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import com.habits.twenty1.game_logic.deck
 import com.habits.twenty1.presentation.NormalGameUiState
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-class NormalGameViewModel : ViewModel() {
+class NormalGameViewModel(private val game : Game) : ViewModel() {
 
     private val _uiState = MutableStateFlow(NormalGameUiState())
     val uiState : StateFlow<NormalGameUiState> = _uiState.asStateFlow()
 
     val playerCards = mutableListOf<Card>()
     val dealerCards = mutableListOf<Card>()
-    val game = Game(deck)
+    val deckProvider  = DeckProvider()
+//    val game = Game(deckProvider)
 
     init{
         game.shuffleDeck()
