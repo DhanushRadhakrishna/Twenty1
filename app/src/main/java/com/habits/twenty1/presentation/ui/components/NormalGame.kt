@@ -40,11 +40,11 @@ import com.habits.twenty1.presentation.viewmodelfactory.ViewModelFactory
 
 
 @Composable
-fun NormalGame(modifier: Modifier = Modifier.padding(top = 24.dp)) {
-    val deckProvider = DeckProvider()
-    val game = Game(deckProvider)
-    val factory = remember { ViewModelFactory(game) }
-    val viewModel : NormalGameViewModel = viewModel(factory = factory)
+fun NormalGame(viewModel : NormalGameViewModel, modifier: Modifier = Modifier.padding(top = 24.dp)) {
+
+//    val factory = remember { ViewModelFactory(game) }
+//    val viewModel : NormalGameViewModel = viewModel(factory = factory)
+//    val viewModel : NormalGameViewModel = viewModel()
     val uiState = viewModel.uiState.collectAsStateWithLifecycle()
     Column(modifier = Modifier.padding(12.dp).fillMaxSize()) {
         Text(
@@ -157,7 +157,7 @@ fun PlayersHand(card:Card,modifier: Modifier = Modifier)
 //@Preview
 @Composable
 fun NormalGameScreen() {
-    NormalGame()
+//    NormalGame()
 }
 //@Preview
 @Composable
@@ -172,5 +172,5 @@ fun DealersCardsPreview() {
 @Preview
 @Composable
 fun NormalGamePreview() {
-    NormalGame()
+//    NormalGame()
 }

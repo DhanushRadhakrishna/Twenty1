@@ -10,7 +10,7 @@ class ViewModelFactory(private val game : Game) : ViewModelProvider.Factory
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if(modelClass.isAssignableFrom(NormalGameViewModel::class.java))
         {
-            return NormalGameViewModel(game) as T
+            return NormalGameViewModel() as T
         }
         throw IllegalArgumentException("Unknown ViewModel")
     }

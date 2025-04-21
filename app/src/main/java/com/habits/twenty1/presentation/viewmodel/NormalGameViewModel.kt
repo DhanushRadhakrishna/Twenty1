@@ -7,18 +7,21 @@ import com.habits.twenty1.game_logic.Game
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import com.habits.twenty1.presentation.NormalGameUiState
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import javax.inject.Inject
 
-class NormalGameViewModel(private val game : Game) : ViewModel() {
+@HiltViewModel
+class NormalGameViewModel  @Inject constructor(): ViewModel() {
 
+//    private val game : Game()
     private val _uiState = MutableStateFlow(NormalGameUiState())
     val uiState : StateFlow<NormalGameUiState> = _uiState.asStateFlow()
-
     val playerCards = mutableListOf<Card>()
     val dealerCards = mutableListOf<Card>()
     val deckProvider  = DeckProvider()
-//    val game = Game(deckProvider)
+    val game = Game(deckProvider)
 
     init{
         game.shuffleDeck()
@@ -66,22 +69,28 @@ class NormalGameViewModel(private val game : Game) : ViewModel() {
         }
     }
     //player hits
-    fun hit()
-    {
-        playerCards.add(game.dealACard())
+    fun hit() {
+        // Draw exactly one card and add it
+        val newCard = game.dealACard()
+        var newPlayerCards = playerCards + newCard
+        playerCards.add(newCard)
+
+        // Snapshot the updated list into a fresh List instance
+
         _uiState.update {
-            it.copy(playerHand = playerCards)
-        }
-        if(playerCards.size>2)
-        {
-            updateActionCenter(null,null,false,false)
-        }
-        if(game.handValue(playerCards)>21)
-        {
-            updateActionCenter(false,false,false,false)
-            showTheWinner()
+            it.copy(playerHand = newPlayerCards)
         }
 
+        // Update action buttons based on hand size
+        if (playerCards.size > 2) {
+            updateActionCenter(null, null, false, false)
+        }
+
+        // Check for bust
+        if (game.handValue(playerCards) > 21) {
+            updateActionCenter(false, false, false, false)
+            showTheWinner()
+        }
     }
     fun stand()
     {

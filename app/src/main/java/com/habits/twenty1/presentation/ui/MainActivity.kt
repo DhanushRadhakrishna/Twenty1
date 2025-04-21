@@ -7,7 +7,9 @@ import androidx.activity.enableEdgeToEdge
 import com.habits.twenty1.presentation.ui.components.Home
 import com.habits.twenty1.presentation.ui.components.HomeScreen
 import com.habits.twenty1.presentation.ui.theme.Twenty1Theme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
