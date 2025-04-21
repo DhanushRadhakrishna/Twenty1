@@ -1,5 +1,6 @@
 package com.habits.twenty1.presentation.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.habits.twenty1.game_logic.Card
 import com.habits.twenty1.game_logic.DeckProvider
@@ -23,7 +24,9 @@ class NormalGameViewModel  @Inject constructor(): ViewModel() {
     val deckProvider  = DeckProvider()
     val game = Game(deckProvider)
 
+
     init{
+
         game.shuffleDeck()
         dealPlayerHand()
         dealDealerHand()
@@ -71,14 +74,17 @@ class NormalGameViewModel  @Inject constructor(): ViewModel() {
     //player hits
     fun hit() {
         // Draw exactly one card and add it
-        val newCard = game.dealACard()
-        var newPlayerCards = playerCards + newCard
-        playerCards.add(newCard)
+        val updatedPlayerCards = playerCards.toMutableList().apply {
+            add(game.dealACard())
+        }
 
-        // Snapshot the updated list into a fresh List instance
+        // Assign the new list back to playerCards
+        playerCards.clear()
+        playerCards.addAll(updatedPlayerCards)
 
+        // Update the UI state with the new list
         _uiState.update {
-            it.copy(playerHand = newPlayerCards)
+            it.copy(playerHand = playerCards.toList()) // Convert to immutable list
         }
 
         // Update action buttons based on hand size
@@ -134,5 +140,6 @@ class NormalGameViewModel  @Inject constructor(): ViewModel() {
             it.copy(gameMessage = game.determineWinner(playerCards,dealerCards))
         }
     }
+
 
 }

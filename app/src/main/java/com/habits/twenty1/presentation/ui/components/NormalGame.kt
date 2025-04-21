@@ -1,5 +1,6 @@
 package com.habits.twenty1.presentation.ui.components
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
@@ -16,7 +17,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
@@ -46,6 +49,7 @@ fun NormalGame(viewModel : NormalGameViewModel, modifier: Modifier = Modifier.pa
 //    val viewModel : NormalGameViewModel = viewModel(factory = factory)
 //    val viewModel : NormalGameViewModel = viewModel()
     val uiState = viewModel.uiState.collectAsStateWithLifecycle()
+
     Column(modifier = Modifier.padding(12.dp).fillMaxSize()) {
         Text(
             text = "Normal Game",
@@ -57,11 +61,15 @@ fun NormalGame(viewModel : NormalGameViewModel, modifier: Modifier = Modifier.pa
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.bodyMedium
         )
-        Table(uiState.value.dealerHand,
-            uiState.value.playerHand,
-            uiState.value.gameMessage,
-            modifier = Modifier.weight(0.75f)
-        )
+
+        key(uiState.value.dealerHand.hashCode(),uiState.value.playerHand.hashCode()) {
+            Table(dealersHand = uiState.value.dealerHand ,
+                playersHand = uiState.value.playerHand,
+                gameMessage = uiState.value.gameMessage,
+                modifier = Modifier.weight(0.75f)
+            )
+        }
+
         ActionCenter(modifier = Modifier.weight(0.15f),
                     hitButtonState = uiState.value.hitActionState,
                     standButtonState = uiState.value.standActionState,
@@ -76,7 +84,13 @@ fun NormalGame(viewModel : NormalGameViewModel, modifier: Modifier = Modifier.pa
 }
 
 @Composable
-fun Table(dealersHand: List<Card>, playersHand: List<Card>,gameMessage : String = "Default message",modifier: Modifier = Modifier.fillMaxHeight().padding(4.dp)) {
+fun Table(dealersHand: List<Card>,
+          playersHand: List<Card>,
+          gameMessage : String = "Default message",
+          modifier: Modifier = Modifier.fillMaxHeight().padding(4.dp))
+{
+    Log.d("NormalGame","Playerhand hash code ${playersHand.hashCode()}")
+    Log.d("NormalGame","Game message hash code ${gameMessage.hashCode()}")
     Column(modifier = modifier.background(color = OffWhite)) {
         Text("Dealer", modifier = Modifier.padding(start = 12.dp, top = 12.dp))
         LazyRow(modifier = Modifier
@@ -98,7 +112,7 @@ fun Table(dealersHand: List<Card>, playersHand: List<Card>,gameMessage : String 
             .fillMaxWidth()
             .height(100.dp)
             .padding(start = 12.dp, end = 12.dp)) {
-            items(playersHand) { item ->
+            items(items = playersHand, key = { card -> card.hashCode()}) { item ->
                 PlayersHand(item)
             }
         }
