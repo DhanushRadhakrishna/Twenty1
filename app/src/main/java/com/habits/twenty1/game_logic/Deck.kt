@@ -1,6 +1,8 @@
 package com.habits.twenty1.game_logic
 
-class DeckProvider {
+import javax.inject.Inject
+
+class DeckProvider @Inject constructor() {
     private val deck: MutableList<Card> = mutableListOf(
         Card("Hearts", '2', 2), Card("Hearts", '3', 3), Card("Hearts", '4', 4), Card("Hearts", '5', 5),
         Card("Hearts", '6', 6), Card("Hearts", '7', 7), Card("Hearts", '8', 8), Card("Hearts", '9', 9),

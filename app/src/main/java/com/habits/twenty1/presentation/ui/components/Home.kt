@@ -21,9 +21,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.habits.twenty1.game_logic.DeckProvider
-import com.habits.twenty1.game_logic.Game
-import com.habits.twenty1.presentation.Destination
 import com.habits.twenty1.presentation.Home
 import com.habits.twenty1.presentation.NormalGame
 import com.habits.twenty1.presentation.ui.theme.Twenty1Theme
@@ -43,8 +40,7 @@ fun Home(modifier: Modifier  = Modifier)
                     HomeScreen(onClickNormalGame = {navController.navigateSingleTop(NormalGame.route)})
                 }
                 composable(route = NormalGame.route){backStackEntry ->
-//                    val deckProvider = DeckProvider()
-//                    val game = Game(deckProvider)
+
                     val normalGameViewModel : NormalGameViewModel = hiltViewModel(backStackEntry)
                     NormalGame(normalGameViewModel)
                 }

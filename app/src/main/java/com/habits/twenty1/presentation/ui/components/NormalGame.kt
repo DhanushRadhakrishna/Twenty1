@@ -4,52 +4,40 @@ import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.lifecycle.viewmodel.viewModelFactory
 import com.habits.twenty1.game_logic.Card
-import com.habits.twenty1.game_logic.DeckProvider
-import com.habits.twenty1.game_logic.Game
-import com.habits.twenty1.presentation.NormalGame
 import com.habits.twenty1.presentation.ui.theme.OffWhite
 import com.habits.twenty1.presentation.viewmodel.NormalGameViewModel
-import com.habits.twenty1.presentation.viewmodelfactory.ViewModelFactory
 
 
 @Composable
 fun NormalGame(viewModel : NormalGameViewModel, modifier: Modifier = Modifier.padding(top = 24.dp)) {
 
-//    val factory = remember { ViewModelFactory(game) }
-//    val viewModel : NormalGameViewModel = viewModel(factory = factory)
-//    val viewModel : NormalGameViewModel = viewModel()
-    val uiState = viewModel.uiState.collectAsStateWithLifecycle()
 
+    val uiState = viewModel.uiState.collectAsStateWithLifecycle()
+    val playerHand by viewModel.playerHand.collectAsStateWithLifecycle()
+    val dealerHand by viewModel.dealerHand.collectAsStateWithLifecycle()
+//    LaunchedEffect(uiState.value.playerHand) {
+//        Log.d("NormalGame","${uiState.value.playerHand.hashCode()}")
+//    }
     Column(modifier = Modifier.padding(12.dp).fillMaxSize()) {
         Text(
             text = "Normal Game",
@@ -62,13 +50,13 @@ fun NormalGame(viewModel : NormalGameViewModel, modifier: Modifier = Modifier.pa
             style = MaterialTheme.typography.bodyMedium
         )
 
-        key(uiState.value.dealerHand.hashCode(),uiState.value.playerHand.hashCode()) {
-            Table(dealersHand = uiState.value.dealerHand ,
-                playersHand = uiState.value.playerHand,
+//        key(uiState.value.dealerHand.hashCode(),uiState.value.playerHand.hashCode()) {
+            Table(dealersHand = dealerHand,
+                playersHand = playerHand,
                 gameMessage = uiState.value.gameMessage,
                 modifier = Modifier.weight(0.75f)
             )
-        }
+//        }
 
         ActionCenter(modifier = Modifier.weight(0.15f),
                     hitButtonState = uiState.value.hitActionState,

@@ -11,18 +11,25 @@ import com.habits.twenty1.presentation.NormalGameUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import java.lang.Thread.State
 import javax.inject.Inject
 
 @HiltViewModel
-class NormalGameViewModel  @Inject constructor(): ViewModel() {
+class NormalGameViewModel  @Inject constructor(val game : Game): ViewModel() {
 
-//    private val game : Game()
+
     private val _uiState = MutableStateFlow(NormalGameUiState())
     val uiState : StateFlow<NormalGameUiState> = _uiState.asStateFlow()
+
+    private val _playerHand = MutableStateFlow<List<Card>>(listOf())
+    val playerHand : StateFlow<List<Card>> = _playerHand.asStateFlow()
+
+    private val _dealerHand = MutableStateFlow<List<Card>>(listOf())
+    val dealerHand : StateFlow<List<Card>> = _dealerHand.asStateFlow()
+
     val playerCards = mutableListOf<Card>()
     val dealerCards = mutableListOf<Card>()
-    val deckProvider  = DeckProvider()
-    val game = Game(deckProvider)
+
 
 
     init{
@@ -45,16 +52,14 @@ class NormalGameViewModel  @Inject constructor(): ViewModel() {
     fun dealPlayerHand()
     {
         playerCards.add(game.dealACard())
-        _uiState.update {
-            it.copy(playerHand = playerCards)
-        }
+
+        _playerHand.value = playerCards.map { it.copy() }
     }
     fun dealDealerHand()
     {
         dealerCards.add(game.dealACard())
-        _uiState.update {
-            it.copy(dealerHand = dealerCards)
-        }
+
+        _dealerHand.value = dealerCards.map { it.copy() }
     }
     //check if players cards is blackjack
     fun checkBlackJack()
@@ -74,18 +79,9 @@ class NormalGameViewModel  @Inject constructor(): ViewModel() {
     //player hits
     fun hit() {
         // Draw exactly one card and add it
-        val updatedPlayerCards = playerCards.toMutableList().apply {
-            add(game.dealACard())
-        }
+        playerCards.add(game.dealACard())
 
-        // Assign the new list back to playerCards
-        playerCards.clear()
-        playerCards.addAll(updatedPlayerCards)
-
-        // Update the UI state with the new list
-        _uiState.update {
-            it.copy(playerHand = playerCards.toList()) // Convert to immutable list
-        }
+        _playerHand.value = playerCards.map { it.copy() }
 
         // Update action buttons based on hand size
         if (playerCards.size > 2) {
@@ -105,9 +101,8 @@ class NormalGameViewModel  @Inject constructor(): ViewModel() {
         while(game.handValue(dealerCards)<17)
         {
             dealerCards.add(game.dealACard())
-            _uiState.update {
-                it.copy(dealerHand = dealerCards)
-            }
+
+            _dealerHand.value = dealerCards.map { it.copy() }
         }
         //determine the winner
         updateActionCenter(false,false,false,false)
@@ -140,6 +135,5 @@ class NormalGameViewModel  @Inject constructor(): ViewModel() {
             it.copy(gameMessage = game.determineWinner(playerCards,dealerCards))
         }
     }
-
 
 }

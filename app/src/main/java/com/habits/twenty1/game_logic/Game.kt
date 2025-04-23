@@ -1,6 +1,8 @@
 package com.habits.twenty1.game_logic
 
-class Game(private val deckProvider : DeckProvider) {
+import javax.inject.Inject
+
+class Game @Inject constructor(deckProvider : DeckProvider) {
 
     private val deck = deckProvider.provideDecks()
     fun shuffleDeck()
