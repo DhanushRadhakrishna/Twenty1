@@ -30,8 +30,6 @@ class NormalGameViewModel  @Inject constructor(val game : Game): ViewModel() {
     val playerCards = mutableListOf<Card>()
     val dealerCards = mutableListOf<Card>()
 
-
-
     init{
 
         game.shuffleDeck()

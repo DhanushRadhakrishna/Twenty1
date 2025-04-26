@@ -1,9 +1,10 @@
 package com.habits.twenty1.presentation.ui.components
 
+import CardFace
 import android.util.Log
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,15 +17,19 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.habits.twenty1.R
 import com.habits.twenty1.game_logic.Card
+import com.habits.twenty1.game_logic.DeckProvider
 import com.habits.twenty1.presentation.ui.theme.OffWhite
+import com.habits.twenty1.presentation.ui.utilities.CardImageEnum
 import com.habits.twenty1.presentation.viewmodel.NormalGameViewModel
 
 
@@ -35,9 +40,8 @@ fun NormalGame(viewModel : NormalGameViewModel, modifier: Modifier = Modifier.pa
     val uiState = viewModel.uiState.collectAsStateWithLifecycle()
     val playerHand by viewModel.playerHand.collectAsStateWithLifecycle()
     val dealerHand by viewModel.dealerHand.collectAsStateWithLifecycle()
-//    LaunchedEffect(uiState.value.playerHand) {
-//        Log.d("NormalGame","${uiState.value.playerHand.hashCode()}")
-//    }
+
+
     Column(modifier = Modifier.padding(12.dp).fillMaxSize()) {
         Text(
             text = "Normal Game",
@@ -50,13 +54,11 @@ fun NormalGame(viewModel : NormalGameViewModel, modifier: Modifier = Modifier.pa
             style = MaterialTheme.typography.bodyMedium
         )
 
-//        key(uiState.value.dealerHand.hashCode(),uiState.value.playerHand.hashCode()) {
             Table(dealersHand = dealerHand,
                 playersHand = playerHand,
                 gameMessage = uiState.value.gameMessage,
                 modifier = Modifier.weight(0.75f)
             )
-//        }
 
         ActionCenter(modifier = Modifier.weight(0.15f),
                     hitButtonState = uiState.value.hitActionState,
@@ -75,101 +77,95 @@ fun NormalGame(viewModel : NormalGameViewModel, modifier: Modifier = Modifier.pa
 fun Table(dealersHand: List<Card>,
           playersHand: List<Card>,
           gameMessage : String = "Default message",
-          modifier: Modifier = Modifier.fillMaxHeight().padding(4.dp))
+          modifier: Modifier = Modifier.fillMaxHeight())
 {
     Log.d("NormalGame","Playerhand hash code ${playersHand.hashCode()}")
     Log.d("NormalGame","Game message hash code ${gameMessage.hashCode()}")
     Column(modifier = modifier.background(color = OffWhite)) {
-        Text("Dealer", modifier = Modifier.padding(start = 12.dp, top = 12.dp))
-        LazyRow(modifier = Modifier
-            .fillMaxWidth()
-            .height(100.dp)
-            .padding(start = 12.dp, end = 12.dp)) {
-            items(dealersHand) { item ->
-                 DealersHand(item)
+        Row(Modifier.padding(12.dp)) {
+            LazyRow(modifier = Modifier
+                .fillMaxWidth()
+                .height(100.dp)
+                .padding(start = 12.dp, end = 12.dp)) {
+                items(dealersHand) { item ->
+                    DealersHand(item)
+                }
             }
         }
+
         Text(text = gameMessage,
             modifier = Modifier.fillMaxWidth().padding(24.dp), color = Color.Black,
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.bodyMedium
             )
-
-        Text("Player", modifier = Modifier.padding(start = 12.dp, top = 16.dp))
-        LazyRow(modifier = Modifier
-            .fillMaxWidth()
-            .height(100.dp)
-            .padding(start = 12.dp, end = 12.dp)) {
-            items(items = playersHand, key = { card -> card.hashCode()}) { item ->
-                PlayersHand(item)
+        Row(
+            modifier = Modifier
+                .fillMaxHeight()
+                .padding(12.dp)
+                .align(Alignment.CenterHorizontally),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            LazyRow(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(100.dp)
+                    .padding(start = 12.dp, end = 12.dp)
+            ) {
+                items(items = playersHand) { item ->
+                    PlayersHand(item)
+                }
             }
         }
+
     }
 }
 
 @Composable
 fun DealersHand(card: Card, modifier: Modifier = Modifier) {
-    var textForCard = ""
-    when(card.suit){
-        "Diamonds" ->{
-            textForCard = card.rank + "♦"
-        }
-        "Hearts" -> {
-            textForCard = card.rank +"♥"
-        }
-        "Clubs"->{
-            textForCard = card.rank + "♣"
-        }
-        "Spades"->{
-            textForCard = card.rank + "♠"
-        }
-    }
-    Text(
-        text = textForCard,
-        modifier = Modifier.border(width = 2.dp, color = Color.Black).padding(4.dp),
-        color = Color.Black,
-        style = MaterialTheme.typography.labelSmall.copy(fontSize = 12.sp)
-    )
+//    Text(
+//        text = textForCard,
+//        modifier = Modifier.border(width = 2.dp, color = Color.Black).padding(4.dp),
+//        color = Color.Black,
+//        style = MaterialTheme.typography.labelSmall.copy(fontSize = 12.sp)
+//    )
+    val cardDrawableFileName = card.suit +"_"+ card.rank
+    val cardResID = CardImageEnum.fromName(cardDrawableFileName)
+    Log.d("CardFace:Dealers","${cardDrawableFileName}")
+    CardFace(cardResID?.resId ?: R.drawable.blank_card,modifier = Modifier)
+
 }
 @Composable
 fun PlayersHand(card:Card,modifier: Modifier = Modifier)
 {
-    var textForCard = ""
-    when(card.suit){
-        "Diamonds" ->{
-            textForCard = card.rank + "♦"
-        }
-        "Hearts" -> {
-            textForCard = card.rank +"♥"
-        }
-        "Clubs"->{
-            textForCard = card.rank + "♣"
-        }
-        "Spades"->{
-            textForCard = card.rank + "♠"
-        }
-    }
-    Text(
-        text = textForCard,
-        modifier = Modifier.border(width = 2.dp, color = Color.Black).padding(4.dp),
-        color = Color.Black,
-        style = MaterialTheme.typography.labelSmall.copy(fontSize = 12.sp)
-    )
+//    Text(
+//        text = textForCard,
+//        modifier = Modifier.border(width = 2.dp, color = Color.Black).padding(4.dp),
+//        color = Color.Black,
+//        style = MaterialTheme.typography.labelSmall.copy(fontSize = 12.sp)
+//    )
+
+    val cardDrawableFileName = card.suit +"_"+ card.rank
+    val cardResID = CardImageEnum.fromName(cardDrawableFileName)
+    Log.d("CardFace:Players","${cardDrawableFileName}")
+    CardFace(cardResID?.resId ?: R.drawable.blank_card,modifier = Modifier)
+
 }
 //@Preview
 @Composable
 fun NormalGameScreen() {
 //    NormalGame()
 }
-//@Preview
+@Preview
 @Composable
 fun TablePreview() {
-//    Table(exampleCards, exampleCards,"Default message",modifier = Modifier)
+    val previewCards = listOf<Card>( Card("Hearts", "2", 2), Card("Hearts", "3", 3), Card("Hearts", "4", 4), Card("Hearts", "5", 5),
+        Card("Hearts", "6", 6))
+    Table(previewCards,previewCards,"Default message",modifier = Modifier)
 }
 //@Preview
 @Composable
 fun DealersCardsPreview() {
-    DealersHand(Card("Diamonds", 'A',11), modifier = Modifier)
+    DealersHand(Card("Diamonds", "A",11), modifier = Modifier)
 }
 @Preview
 @Composable

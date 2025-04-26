@@ -23,7 +23,7 @@ class Game @Inject constructor(deckProvider : DeckProvider) {
         for (card in hand)
         {
             totalValue += card.value
-            if(card.rank == 'A')
+            if(card.rank == "A")
             {
                 ace_count++
             }

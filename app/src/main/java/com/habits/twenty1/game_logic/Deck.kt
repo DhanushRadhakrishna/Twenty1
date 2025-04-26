@@ -4,21 +4,21 @@ import javax.inject.Inject
 
 class DeckProvider @Inject constructor() {
     private val deck: MutableList<Card> = mutableListOf(
-        Card("Hearts", '2', 2), Card("Hearts", '3', 3), Card("Hearts", '4', 4), Card("Hearts", '5', 5),
-        Card("Hearts", '6', 6), Card("Hearts", '7', 7), Card("Hearts", '8', 8), Card("Hearts", '9', 9),
-        Card("Hearts", 'T', 10), Card("Hearts", 'J', 10), Card("Hearts", 'Q', 10), Card("Hearts", 'K', 10), Card("Hearts", 'A', 11),
+        Card("hearts", "2", 2), Card("hearts", "3", 3), Card("hearts", "4", 4), Card("hearts", "5", 5),
+        Card("hearts", "6", 6), Card("hearts", "7", 7), Card("hearts", "8", 8), Card("hearts", "9", 9),
+        Card("hearts", "10", 10),Card("hearts", "jack", 10), Card("hearts", "queen", 10), Card("hearts", "ace", 11),
 
-        Card("Diamonds", '2', 2), Card("Diamonds", '3', 3), Card("Diamonds", '4', 4), Card("Diamonds", '5', 5),
-        Card("Diamonds", '6', 6), Card("Diamonds", '7', 7), Card("Diamonds", '8', 8), Card("Diamonds", '9', 9),
-        Card("Diamonds", 'T', 10), Card("Diamonds", 'J', 10), Card("Diamonds", 'Q', 10), Card("Diamonds", 'K', 10), Card("Diamonds", 'A', 11),
+        Card("diamonds", "2", 2), Card("diamonds", "3", 3), Card("diamonds", "4", 4), Card("diamonds", "5", 5),
+        Card("diamonds", "6", 6), Card("diamonds", "7", 7), Card("diamonds", "8", 8), Card("diamonds", "9", 9),
+        Card("diamonds", "10", 10), Card("diamonds", "queen", 10), Card("diamonds", "king", 10), Card("diamonds", "ace", 11),
 
-        Card("Clubs", '2', 2), Card("Clubs", '3', 3), Card("Clubs", '4', 4), Card("Clubs", '5', 5),
-        Card("Clubs", '6', 6), Card("Clubs", '7', 7), Card("Clubs", '8', 8), Card("Clubs", '9', 9),
-        Card("Clubs", 'T', 10), Card("Clubs", 'J', 10), Card("Clubs", 'Q', 10), Card("Clubs", 'K', 10), Card("Clubs", 'A', 11),
+        Card("clubs", "2", 2), Card("clubs", "3", 3), Card("clubs", "4", 4), Card("clubs", "5", 5),
+        Card("clubs", "6", 6), Card("clubs", "7", 7), Card("clubs", "8", 8), Card("clubs", "9", 9),
+        Card("clubs", "10", 10), Card("clubs", "queen", 10), Card("clubs", "king", 10), Card("clubs", "ace", 11),
 
-        Card("Spades", '2', 2), Card("Spades", '3', 3), Card("Spades", '4', 4), Card("Spades", '5', 5),
-        Card("Spades", '6', 6), Card("Spades", '7', 7), Card("Spades", '8', 8), Card("Spades", '9', 9),
-        Card("Spades", 'T', 10), Card("Spades", 'J', 10), Card("Spades", 'Q', 10), Card("Spades", 'K', 10), Card("Spades", 'A', 11)
+        Card("spades", "2", 2), Card("spades", "3", 3), Card("spades", "4", 4), Card("spades", "5", 5),
+        Card("spades", "6", 6), Card("spades", "7", 7), Card("spades", "8", 8), Card("spades", "9", 9),
+        Card("spades", "10", 10), Card("spades", "ace", 11)
     )
 
     fun provideDecks(numberOfDecks : Int =1) : MutableList<Card>
@@ -26,3 +26,10 @@ class DeckProvider @Inject constructor() {
         return deck
     }
 }
+//, Card("hearts", "jack", 10)
+//, Card("hearts", "king", 10)
+//, Card("diamonds", "jack", 10)
+//, Card("spades", "jack", 10)
+//, Card("clubs", "jack", 10)
+//, Card("spades", "queen", 10)
+//, Card("spades", "king", 10)
