@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
@@ -75,7 +76,7 @@ fun NormalGame(viewModel : NormalGameViewModel, modifier: Modifier = Modifier.pa
 
 @Composable
 fun Table(dealersHand: List<Card>,
-          playersHand: List<Card>,
+          playersHand: List<List<Card>>,
           gameMessage : String = "Default message",
           modifier: Modifier = Modifier.fillMaxHeight())
 {
@@ -105,16 +106,18 @@ fun Table(dealersHand: List<Card>,
                 .align(Alignment.CenterHorizontally),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            LazyRow(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(100.dp)
-                    .padding(start = 12.dp, end = 12.dp)
-            ) {
-                items(items = playersHand) { item ->
-                    PlayersHand(item)
+            LazyColumn() {
+                items(items = playersHand)
+                {
+                    hand -> LazyRow(modifier = Modifier.fillMaxWidth().height(100.dp).padding(start = 12.dp, end = 12.dp, bottom = 4.dp))
+                    {
+                        items(items = hand) { item ->
+                        PlayersHand(item)
+                        }
+                    }
                 }
             }
+
         }
 
     }
@@ -122,12 +125,6 @@ fun Table(dealersHand: List<Card>,
 
 @Composable
 fun DealersHand(card: Card, modifier: Modifier = Modifier) {
-//    Text(
-//        text = textForCard,
-//        modifier = Modifier.border(width = 2.dp, color = Color.Black).padding(4.dp),
-//        color = Color.Black,
-//        style = MaterialTheme.typography.labelSmall.copy(fontSize = 12.sp)
-//    )
     val cardDrawableFileName = card.suit +"_"+ card.rank
     val cardResID = CardImageEnum.fromName(cardDrawableFileName)
     Log.d("CardFace:Dealers","${cardDrawableFileName}")
@@ -137,12 +134,6 @@ fun DealersHand(card: Card, modifier: Modifier = Modifier) {
 @Composable
 fun PlayersHand(card:Card,modifier: Modifier = Modifier)
 {
-//    Text(
-//        text = textForCard,
-//        modifier = Modifier.border(width = 2.dp, color = Color.Black).padding(4.dp),
-//        color = Color.Black,
-//        style = MaterialTheme.typography.labelSmall.copy(fontSize = 12.sp)
-//    )
 
     val cardDrawableFileName = card.suit +"_"+ card.rank
     val cardResID = CardImageEnum.fromName(cardDrawableFileName)
@@ -160,7 +151,18 @@ fun NormalGameScreen() {
 fun TablePreview() {
     val previewCards = listOf<Card>( Card("Hearts", "2", 2), Card("Hearts", "3", 3), Card("Hearts", "4", 4), Card("Hearts", "5", 5),
         Card("Hearts", "6", 6))
-    Table(previewCards,previewCards,"Default message",modifier = Modifier)
+    val hand1 = listOf(
+        Card("hearts", "5", 5),
+        Card("hearts", "K", 10)
+    )
+
+    val hand2 = listOf(
+        Card("spades", "A", 11),
+        Card("spades", "9", 9)
+    )
+
+    val playerHandsPreview: List<List<Card>> = listOf(hand1, hand2)
+    Table(previewCards,playerHandsPreview,"Default message",modifier = Modifier)
 }
 //@Preview
 @Composable

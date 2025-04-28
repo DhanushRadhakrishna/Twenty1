@@ -21,48 +21,54 @@ class NormalGameViewModel  @Inject constructor(val game : Game): ViewModel() {
     private val _uiState = MutableStateFlow(NormalGameUiState())
     val uiState : StateFlow<NormalGameUiState> = _uiState.asStateFlow()
 
-    private val _playerHand = MutableStateFlow<List<Card>>(listOf())
-    val playerHand : StateFlow<List<Card>> = _playerHand.asStateFlow()
+    private val _playerHand = MutableStateFlow<List<List<Card>>>(listOf())
+    val playerHand : StateFlow<List<List<Card>>> = _playerHand.asStateFlow()
 
     private val _dealerHand = MutableStateFlow<List<Card>>(listOf())
     val dealerHand : StateFlow<List<Card>> = _dealerHand.asStateFlow()
 
-    val playerCards = mutableListOf<Card>()
+//    val playerCards = mutableListOf<Card>()
     val dealerCards = mutableListOf<Card>()
+    val playerHands : MutableList<MutableList<Card>> = mutableListOf(mutableListOf<Card>())
 
     init{
-
         game.shuffleDeck()
         dealPlayerHand()
         dealDealerHand()
         dealPlayerHand()
         dealDealerHand()
-        checkBlackJack()
-        if(game.handValue(playerCards)>9)
+        checkBlackJack(playerHands[0])
+        if(game.handValue(playerHands[0])>9)
         {
             updateActionCenter(null,null,true,null)
         }
-        if(game.checkSplit(playerCards))
+        if(game.checkSplit(playerHands[0]))
         {
             updateActionCenter(null,null,null,true)
         }
     }
-    fun dealPlayerHand()
+    private fun dealPlayerHand(index : Int =0)
     {
-        playerCards.add(game.dealACard())
-
-        _playerHand.value = playerCards.map { it.copy() }
+        val newHand = playerHands[index]
+        newHand.add(game.dealACard())
+        playerHands[index] = newHand
+        updatePlayerStateFlow()
     }
-    fun dealDealerHand()
+    private fun updatePlayerStateFlow()
+    {
+        _playerHand.value = playerHands.map{it.toList()}
+    }
+
+    private fun dealDealerHand()
     {
         dealerCards.add(game.dealACard())
 
         _dealerHand.value = dealerCards.map { it.copy() }
     }
     //check if players cards is blackjack
-    fun checkBlackJack()
+    private fun checkBlackJack(hand : List<Card>)
     {
-        if(game.isBlackjack(playerCards))
+        if(game.isBlackjack(hand))
         {
             _uiState.update {
                 it.copy(gameMessage = "Blackjack! You Win!")
@@ -77,17 +83,15 @@ class NormalGameViewModel  @Inject constructor(val game : Game): ViewModel() {
     //player hits
     fun hit() {
         // Draw exactly one card and add it
-        playerCards.add(game.dealACard())
-
-        _playerHand.value = playerCards.map { it.copy() }
+        dealPlayerHand()
 
         // Update action buttons based on hand size
-        if (playerCards.size > 2) {
+        if (playerHands[0].size > 2) {
             updateActionCenter(null, null, false, false)
         }
 
         // Check for bust
-        if (game.handValue(playerCards) > 21) {
+        if (game.handValue(playerHands[0]) > 21) {
             updateActionCenter(false, false, false, false)
             showTheWinner()
         }
@@ -98,9 +102,7 @@ class NormalGameViewModel  @Inject constructor(val game : Game): ViewModel() {
         //if dealers hand is less than 17, hit dealer hand
         while(game.handValue(dealerCards)<17)
         {
-            dealerCards.add(game.dealACard())
-
-            _dealerHand.value = dealerCards.map { it.copy() }
+            dealDealerHand()
         }
         //determine the winner
         updateActionCenter(false,false,false,false)
@@ -108,7 +110,10 @@ class NormalGameViewModel  @Inject constructor(val game : Game): ViewModel() {
     }
     fun split()
     {
-
+        //change the playerCards and change the PlayerHands
+        playerHands.add(mutableListOf(playerHands[0].removeAt(1)))
+        //use above to change the _playerHand
+        updatePlayerStateFlow()
     }
     fun doubleDown()
     {
@@ -130,7 +135,7 @@ class NormalGameViewModel  @Inject constructor(val game : Game): ViewModel() {
     fun showTheWinner()
     {
         _uiState.update {
-            it.copy(gameMessage = game.determineWinner(playerCards,dealerCards))
+            it.copy(gameMessage = game.determineWinner(playerHands[0],dealerCards))
         }
     }
 
